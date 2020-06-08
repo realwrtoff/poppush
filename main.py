@@ -13,7 +13,7 @@ import logging
 import logging.handlers
 import traceback
 
-LOG_FILE = "./log/poppush.log"
+LOG_FILE = "./poppush.log"
 
 
 def init_log():
