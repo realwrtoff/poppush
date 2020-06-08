@@ -1,24 +1,12 @@
-FROM daocloud.io/centos:7
+FROM python:3.7-alpine
 
-# Install Python 3.6 在进行安装时，使用&&连接多行的原因时：减少镜像层数量，压缩镜像体积
-RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm \
-    && yum -y install python36u \
-    && yum -y install python36u-pip \
-    && yum -y install python36u-devel \
-    # clean up cache
-    && yum -y clean all \
-    && mkdir -p /app/log
+COPY requirements.txt /requirements.txt
 
-#定义时区参数
-ENV TZ=Asia/Shanghai
-#设置时区
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo '$TZ' > /etc/timezone
-#设置编码
-ENV LANG en_US.UTF-8
+RUN pip install -r /requirements.txt  -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
-# App home
-WORKDIR /app
-ADD main.py /app/
-ADD requirements.txt /app/
-RUN pip3 install --user -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
-CMD ["python3", "/app/main.py"]
+ENV app /app
+WORKDIR ${app}
+ADD main.py $app
+
+# 自己的部分
+CMD ["python3", "main.py"]
